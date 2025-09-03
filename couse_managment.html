@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .warning-icon {
+            color: #dc3545;
+            font-size: 1.2rem;
+        }
+        .sidebar {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            height: 100%;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .action-buttons .btn {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-graduation-cap me-2"></i>Course Management System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#students">Students</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#teachers">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#courses">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#spaces">Spaces</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#registrations">Registrations</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <h4>Quick Actions</h4>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                            <i class="fas fa-user-plus me-2"></i>Add Student
+                        </button>
+                        <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
+                            <i class="fas fa-chalkboard-teacher me-2"></i>Add Teacher
+                        </button>
+                        <button class="btn btn-info mb-2" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                            <i class="fas fa-book me-2"></i>Add Course
+                        </button>
+                        <button class="btn btn-warning mb-2" data-bs-toggle="modal" data-bs-target="#addSpaceModal">
+                            <i class="fas fa-building me-2"></i>Add Space
+                        </button>
+                        <button class="btn btn-secondary mb-2" data-bs-toggle="modal" data-bs-target="#addRegistrationModal">
+                            <i class="fas fa-clipboard-list me-2"></i>Add Registration
+                        </button>
+                    </div>
+                    
+                    <h4 class="mt-4">Statistics</h4>
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <div class="stats-number" id="studentCount">0</div>
+                            <div>Students</div>
+                        </div>
+                    </div>
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-chalkboard-teacher fa-2x text-success mb-2"></i>
+                            <div class="stats-number" id="teacherCount">0</div>
+                            <div>Teachers</div>
+                        </div>
+                    </div>
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <i class="fas fa-book fa-2x text-info mb-2"></i>
+                            <div class="stats-number" id="courseCount">0</div>
+                            <div>Courses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <!-- Dashboard -->
+                <div id="dashboard">
+                    <h2 class="mb-4">Dashboard</h2>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5>Recent Course Registrations</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Student</th>
+                                                    <th>Course</th>
+                                                    <th>Registration Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentRegistrations">
+                                                <!-- Will be populated by JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Section -->
+                <div id="students" class="content-section" style="display: none;">
+                    <h2 class="mb-4">Students</h2>
+                    <div class="card">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5>All Students</h5>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                                <i class="fas fa-plus me-1"></i> Add New
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Number</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Birthday</th>
+                                            <th>Annual Course</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTable">
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teachers Section -->
+                <div id="teachers" class="content-section" style="display: none;">
+                    <h2 class="mb-4">Teachers</h2>
+                    <div class="card">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5>All Teachers</h5>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
+                                <i class="fas fa-plus me-1"></i> Add New
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Subject</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teachersTable">
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Courses Section -->
+                <div id="courses" class="content-section" style="display: none;">
+                    <h2 class="mb-4">Courses</h2>
+                    <div class="card">
+                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                            <h5>All Courses</h5>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                                <i class="fas fa-plus me-1"></i> Add New
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Teacher</th>
+                                            <th>Space</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="coursesTable">
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spaces Section -->
+                <div id="spaces" class="content-section" style="display: none;">
+                    <h2 class="mb-4">Spaces</h2>
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h5>All Spaces</h5>
+                            <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#addSpaceModal">
+                                <i class="fas fa-plus me-1"></i> Add New
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Capacity</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="spacesTable">
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registrations Section -->
+                <div id="registrations" class="content-section" style="display: none;">
+                    <h2 class="mb-4">Course Registrations</h2>
+                    <div class="card">
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <h5>All Registrations</h5>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addRegistrationModal">
+                                <i class="fas fa-plus me-1"></i> Add New
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Course</th>
+                                            <th>Registration Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="registrationsTable">
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Add New Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStudentForm">
+                        <div class="mb-3">
+                            <label for="studentNumber" class="form-label">Student Number</label>
+                            <input type="text" class="form-control" id="studentNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="birthday" class="form-label">Birthday</label>
+                            <input type="date" class="form-control" id="birthday" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="annualCourse" class="form-label">Annual Course</label>
+                            <select class="form-select" id="annualCourse" required>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveStudentBtn">Save Student</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div class="modal fade" id="addTeacherModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Add New Teacher</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTeacherForm">
+                        <div class="mb-3">
+                            <label for="teacherId" class="form-label">Identification Number</label>
+                            <input type="text" class="form-control" id="teacherId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacherFirstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="teacherFirstName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacherLastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="teacherLastName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="saveTeacherBtn">Save Teacher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Add New Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCourseForm">
+                        <div class="mb-3">
+                            <label for="courseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="courseDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseTeacher" class="form-label">Teacher</label>
+                            <select class="form-select" id="courseTeacher" required>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courseSpace" class="form-label">Space</label>
+                            <select class="form-select" id="courseSpace" required>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-info" id="saveCourseBtn">Save Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Space Modal -->
+    <div class="modal fade" id="addSpaceModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">Add New Space</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSpaceForm">
+                        <div class="mb-3">
+                            <label for="spaceName" class="form-label">Space Name</label>
+                            <input type="text" class="form-control" id="spaceName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="capacity" class="form-label">Capacity</label>
+                            <input type="number" class="form-control" id="capacity" min="1" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-warning" id="saveSpaceBtn">Save Space</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Registration Modal -->
+    <div class="modal fade" id="addRegistrationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title">Add New Registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addRegistrationForm">
+                        <div class="mb-3">
+                            <label for="regStudent" class="form-label">Student</label>
+                            <select class="form-select" id="regStudent" required>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="regCourse" class="form-label">Course</label>
+                            <select class="form-select" id="regCourse" required>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary" id="saveRegistrationBtn">Save Registration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data for demonstration
+        let students = [
+            { id: 1, studentNumber: 'S001', firstName: 'John', lastName: 'Doe', birthday: '2000-05-15', annualCourse: 2 },
+            { id: 2, studentNumber: 'S002', firstName: 'Jane', lastName: 'Smith', birthday: '2001-08-22', annualCourse: 1 },
+            { id: 3, studentNumber: 'S003', firstName: 'Robert', lastName: 'Johnson', birthday: '1999-12-03', annualCourse: 3 }
+        ];
+
+        let teachers = [
+            { id: 1, teacherId: 'T001', firstName: 'Michael', lastName: 'Brown', subject: 'Mathematics' },
+            { id: 2, teacherId: 'T002', firstName: 'Sarah', lastName: 'Williams', subject: 'Physics' },
+            { id: 3, teacherId: 'T003', firstName: 'David', lastName: 'Miller', subject: 'Computer Science' }
+        ];
+
+        let spaces = [
+            { id: 1, name: 'Room 101', capacity: 30 },
+            { id: 2, name: 'Lab A', capacity: 20 },
+            { id: 3, name: 'Auditorium', capacity: 100 }
+        ];
+
+        let courses = [
+            { 
+                id: 1, 
+                name: 'Calculus I', 
+                description: 'Introduction to differential and integral calculus', 
+                startDate: '2023-09-01', 
+                endDate: '2023-12-15', 
+                teacherId: 1, 
+                spaceId: 1 
+            },
+            { 
+                id: 2, 
+                name: 'Physics Fundamentals', 
+                description: 'Basic principles of mechanics and thermodynamics', 
+                startDate: '2023-09-05', 
+                endDate: '2023-12-20', 
+                teacherId: 2, 
+                spaceId: 2 
+            },
+            { 
+                id: 3, 
+                name: 'Web Development', 
+                description: 'Building modern web applications', 
+                startDate: '2023-08-28', 
+                endDate: '2023-12-10', 
+                teacherId: 3, 
+                spaceId: 3 
+            }
+        ];
+
+        let registrations = [
+            { id: 1, studentId: 1, courseId: 1, registrationDate: '2023-08-15 10:30:00' },
+            { id: 2, studentId: 2, courseId: 1, registrationDate: '2023-08-16 14:45:00' },
+            { id: 3, studentId: 3, courseId: 2, registrationDate: '2023-08-17 09:15:00' },
+            { id: 4, studentId: 1, courseId: 3, registrationDate: '2023-08-18 11:20:00' }
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            renderStudentsTable();
+            renderTeachersTable();
+            renderCoursesTable();
+            renderSpacesTable();
+            renderRegistrationsTable();
+            renderRecentRegistrations();
+            populateDropdowns();
+            
+            // Navigation
+            document.querySelectorAll('.navbar-nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    
+                    // Hide all content sections
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show dashboard by default if no specific section is targeted
+                    if (targetId === 'dashboard' || targetId === '') {
+                        document.getElementById('dashboard').style.display = 'block';
+                    } else {
+                        // Show the target section
+                        document.getElementById(targetId).style.display = 'block';
+                    }
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.navbar-nav a').forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Save buttons event listeners
+            document.getElementById('saveStudentBtn').addEventListener('click', addStudent);
+            document.getElementById('saveTeacherBtn').addEventListener('click', addTeacher);
+            document.getElementById('saveCourseBtn').addEventListener('click', addCourse);
+            document.getElementById('saveSpaceBtn').addEventListener('click', addSpace);
+            document.getElementById('saveRegistrationBtn').addEventListener('click', addRegistration);
+        });
+
+        function updateStats() {
+            document.getElementById('studentCount').textContent = students.length;
+            document.getElementById('teacherCount').textContent = teachers.length;
+            document.getElementById('courseCount').textContent = courses.length;
+        }
+
+        function renderStudentsTable() {
+            const tbody = document.getElementById('studentsTable');
+            tbody.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.studentNumber}</td>
+                    <td>${student.firstName}</td>
+                    <td>${student.lastName}</td>
+                    <td>${formatDate(student.birthday)}</td>
+                    <td>Year ${student.annualCourse}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-info" onclick="viewStudent(${student.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editStudent(${student.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteStudent(${student.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderTeachersTable() {
+            const tbody = document.getElementById('teachersTable');
+            tbody.innerHTML = '';
+            
+            teachers.forEach(teacher => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${teacher.teacherId}</td>
+                    <td>${teacher.firstName}</td>
+                    <td>${teacher.lastName}</td>
+                    <td>${teacher.subject}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-info" onclick="viewTeacher(${teacher.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editTeacher(${teacher.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTeacher(${teacher.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderCoursesTable() {
+            const tbody = document.getElementById('coursesTable');
+            tbody.innerHTML = '';
+            
+            courses.forEach(course => {
+                const teacher = teachers.find(t => t.id === course.teacherId);
+                const space = spaces.find(s => s.id === course.spaceId);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${course.name}</td>
+                    <td>${course.description}</td>
+                    <td>${formatDate(course.startDate)}</td>
+                    <td>${formatDate(course.endDate)}</td>
+                    <td>${teacher ? `${teacher.firstName} ${teacher.lastName}` : 'N/A'}</td>
+                    <td>${space ? space.name : 'N/A'}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-info" onclick="viewCourse(${course.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editCourse(${course.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCourse(${course.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderSpacesTable() {
+            const tbody = document.getElementById('spacesTable');
+            tbody.innerHTML = '';
+            
+            spaces.forEach(space => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${space.name}</td>
+                    <td>${space.capacity}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-info" onclick="viewSpace(${space.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editSpace(${space.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSpace(${space.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderRegistrationsTable() {
+            const tbody = document.getElementById('registrationsTable');
+            tbody.innerHTML = '';
+            
+            registrations.forEach(registration => {
+                const student = students.find(s => s.id === registration.studentId);
+                const course = courses.find(c => c.id === registration.courseId);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student ? `${student.firstName} ${student.lastName}` : 'N/A'}</td>
+                    <td>${course ? course.name : 'N/A'}</td>
+                    <td>${formatDateTime(registration.registrationDate)}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-sm btn-danger" onclick="deleteRegistration(${registration.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderRecentRegistrations() {
+            const tbody = document.getElementById('recentRegistrations');
+            tbody.innerHTML = '';
+            
+            // Show only the 5 most recent registrations
+            const recentRegs = [...registrations].sort((a, b) => 
+                new Date(b.registrationDate) - new Date(a.registrationDate)
+            ).slice(0, 5);
+            
+            recentRegs.forEach(registration => {
+                const student = students.find(s => s.id === registration.studentId);
+                const course = courses.find(c => c.id === registration.courseId);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student ? `${student.firstName} ${student.lastName}` : 'N/A'}</td>
+                    <td>${course ? course.name : 'N/A'}</td>
+                    <td>${formatDateTime(registration.registrationDate)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateDropdowns() {
+            // Populate teacher dropdown for course form
+            const teacherDropdown = document.getElementById('courseTeacher');
+            teacherDropdown.innerHTML = '';
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.id;
+                option.textContent = `${teacher.firstName} ${teacher.lastName} (${teacher.subject})`;
+                teacherDropdown.appendChild(option);
+            });
+            
+            // Populate space dropdown for course form
+            const spaceDropdown = document.getElementById('courseSpace');
+            spaceDropdown.innerHTML = '';
+            spaces.forEach(space => {
+                const option = document.createElement('option');
+                option.value = space.id;
+                option.textContent = `${space.name} (Capacity: ${space.capacity})`;
+                spaceDropdown.appendChild(option);
+            });
+            
+            // Populate student dropdown for registration form
+            const studentDropdown = document.getElementById('regStudent');
+            studentDropdown.innerHTML = '';
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.firstName} ${student.lastName} (${student.studentNumber})`;
+                studentDropdown.appendChild(option);
+            });
+            
+            // Populate course dropdown for registration form
+            const courseDropdown = document.getElementById('regCourse');
+            courseDropdown.innerHTML = '';
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.name;
+                courseDropdown.appendChild(option);
+            });
+        }
+
+        function addStudent() {
+            const studentNumber = document.getElementById('studentNumber').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const birthday = document.getElementById('birthday').value;
+            const annualCourse = document.getElementById('annualCourse').value;
+            
+            const newStudent = {
+                id: students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1,
+                studentNumber,
+                firstName,
+                lastName,
+                birthday,
+                annualCourse: parseInt(annualCourse)
+            };
+            
+            students.push(newStudent);
+            renderStudentsTable();
+            updateStats();
+            populateDropdowns(); // Update registration form dropdown
+            bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
+            
+            // Reset form
+            document.getElementById('addStudentForm').reset();
+        }
+
+        function addTeacher() {
+            const teacherId = document.getElementById('teacherId').value;
+            const firstName = document.getElementById('teacherFirstName').value;
+            const lastName = document.getElementById('teacherLastName').value;
+            const subject = document.getElementById('subject').value;
+            
+            const newTeacher = {
+                id: teachers.length > 0 ? Math.max(...teachers.map(t => t.id)) + 1 : 1,
+                teacherId,
+                firstName,
+                lastName,
+                subject
+            };
+            
+            teachers.push(newTeacher);
+            renderTeachersTable();
+            updateStats();
+            populateDropdowns(); // Update course form dropdown
+            bootstrap.Modal.getInstance(document.getElementById('addTeacherModal')).hide();
+            
+            // Reset form
+            document.getElementById('addTeacherForm').reset();
+        }
+
+        function addCourse() {
+            const name = document.getElementById('courseName').value;
+            const description = document.getElementById('courseDescription').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const teacherId = parseInt(document.getElementById('courseTeacher').value);
+            const spaceId = parseInt(document.getElementById('courseSpace').value);
+            
+            const newCourse = {
+                id: courses.length > 0 ? Math.max(...courses.map(c => c.id)) + 1 : 1,
+                name,
+                description,
+                startDate,
+                endDate,
+                teacherId,
+                spaceId
+            };
+            
+            courses.push(newCourse);
+            renderCoursesTable();
+            updateStats();
+            populateDropdowns(); // Update registration form dropdown
+            bootstrap.Modal.getInstance(document.getElementById('addCourseModal')).hide();
+            
+            // Reset form
+            document.getElementById('addCourseForm').reset();
+        }
+
+        function addSpace() {
+            const name = document.getElementById('spaceName').value;
+            const capacity = parseInt(document.getElementById('capacity').value);
+            
+            const newSpace = {
+                id: spaces.length > 0 ? Math.max(...spaces.map(s => s.id)) + 1 : 1,
+                name,
+                capacity
+            };
+            
+            spaces.push(newSpace);
+            renderSpacesTable();
+            populateDropdowns(); // Update course form dropdown
+            bootstrap.Modal.getInstance(document.getElementById('addSpaceModal')).hide();
+            
+            // Reset form
+            document.getElementById('addSpaceForm').reset();
+        }
+
+        function addRegistration() {
+            const studentId = parseInt(document.getElementById('regStudent').value);
+            const courseId = parseInt(document.getElementById('regCourse').value);
+            const registrationDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            
+            const newRegistration = {
+                id: registrations.length > 0 ? Math.max(...registrations.map(r => r.id)) + 1 : 1,
+                studentId,
+                courseId,
+                registrationDate
+            };
+            
+            registrations.push(newRegistration);
+            renderRegistrationsTable();
+            renderRecentRegistrations();
+            bootstrap.Modal.getInstance(document.getElementById('addRegistrationModal')).hide();
+            
+            // Reset form
+            document.getElementById('addRegistrationForm').reset();
+        }
+
+        function viewStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                alert(`Student Details:\nName: ${student.firstName} ${student.lastName}\nStudent Number: ${student.studentNumber}\nBirthday: ${formatDate(student.birthday)}\nAnnual Course: Year ${student.annualCourse}`);
+            }
+        }
+
+        function viewTeacher(id) {
+            const teacher = teachers.find(t => t.id === id);
+            if (teacher) {
+                alert(`Teacher Details:\nName: ${teacher.firstName} ${teacher.lastName}\nID: ${teacher.teacherId}\nSubject: ${teacher.subject}`);
+            }
+        }
+
+        function viewCourse(id) {
+            const course = courses.find(c => c.id === id);
+            if (course) {
+                const teacher = teachers.find(t => t.id === course.teacherId);
+                const space = spaces.find(s => s.id === course.spaceId);
+                const courseRegistrations = registrations.filter(r => r.courseId === id);
+                const registeredStudents = courseRegistrations.map(r => {
+                    const student = students.find(s => s.id === r.studentId);
+                    return student ? `${student.firstName} ${student.lastName} (Year ${student.annualCourse})` : 'N/A';
+                });
+                
+                alert(`Course Details:\nName: ${course.name}\nDescription: ${course.description}\nDates: ${formatDate(course.startDate)} to ${formatDate(course.endDate)}\nTeacher: ${teacher ? `${teacher.firstName} ${teacher.lastName}` : 'N/A'}\nSpace: ${space ? space.name : 'N/A'}\nRegistered Students:\n${registeredStudents.join('\n')}`);
+            }
+        }
+
+        function viewSpace(id) {
+            const space = spaces.find(s => s.id === id);
+            if (space) {
+                const spaceCourses = courses.filter(c => c.spaceId === id);
+                let courseDetails = spaceCourses.map(course => {
+                    const teacher = teachers.find(t => t.id === course.teacherId);
+                    const registrationsCount = registrations.filter(r => r.courseId === course.id).length;
+                    const warning = registrationsCount > space.capacity ? ' ⚠️' : '';
+                    return `${course.name} (Teacher: ${teacher ? `${teacher.firstName} ${teacher.lastName}` : 'N/A'}, Dates: ${formatDate(course.startDate)} to ${formatDate(course.endDate)}, Participants: ${registrationsCount}${warning})`;
+                });
+                
+                if (courseDetails.length === 0) {
+                    courseDetails = ['No courses scheduled in this space'];
+                }
+                
+                alert(`Space Details:\nName: ${space.name}\nCapacity: ${space.capacity}\nCourses:\n${courseDetails.join('\n')}`);
+            }
+        }
+
+        function editStudent(id) {
+            alert(`Edit student with ID ${id} - functionality would be implemented in a real application`);
+        }
+
+        function editTeacher(id) {
+            alert(`Edit teacher with ID ${id} - functionality would be implemented in a real application`);
+        }
+
+        function editCourse(id) {
+            alert(`Edit course with ID ${id} - functionality would be implemented in a real application`);
+        }
+
+        function editSpace(id) {
+            alert(`Edit space with ID ${id} - functionality would be implemented in a real application`);
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                students = students.filter(s => s.id !== id);
+                // Also remove any registrations for this student
+                registrations = registrations.filter(r => r.studentId !== id);
+                renderStudentsTable();
+                renderRegistrationsTable();
+                renderRecentRegistrations();
+                updateStats();
+                populateDropdowns();
+            }
+        }
+
+        function deleteTeacher(id) {
+            if (confirm('Are you sure you want to delete this teacher?')) {
+                // Check if teacher is assigned to any courses
+                const teacherCourses = courses.filter(c => c.teacherId === id);
+                if (teacherCourses.length > 0) {
+                    alert('Cannot delete this teacher because they are assigned to courses. Please reassign the courses first.');
+                    return;
+                }
+                
+                teachers = teachers.filter(t => t.id !== id);
+                renderTeachersTable();
+                updateStats();
+                populateDropdowns();
+            }
+        }
+
+        function deleteCourse(id) {
+            if (confirm('Are you sure you want to delete this course?')) {
+                courses = courses.filter(c => c.id !== id);
+                // Also remove any registrations for this course
+                registrations = registrations.filter(r => r.courseId !== id);
+                renderCoursesTable();
+                renderRegistrationsTable();
+                renderRecentRegistrations();
+                updateStats();
+                populateDropdowns();
+            }
+        }
+
+        function deleteSpace(id) {
+            if (confirm('Are you sure you want to delete this space?')) {
+                // Check if space is assigned to any courses
+                const spaceCourses = courses.filter(c => c.spaceId === id);
+                if (spaceCourses.length > 0) {
+                    alert('Cannot delete this space because it is assigned to courses. Please reassign the courses first.');
+                    return;
+                }
+                
+                spaces = spaces.filter(s => s.id !== id);
+                renderSpacesTable();
+                populateDropdowns();
+            }
+        }
+
+        function deleteRegistration(id) {
+            if (confirm('Are you sure you want to delete this registration?')) {
+                registrations = registrations.filter(r => r.id !== id);
+                renderRegistrationsTable();
+                renderRecentRegistrations();
+            }
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function formatDateTime(dateTimeString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateTimeString).toLocaleDateString(undefined, options);
+        }
+    </script>
+</body>
+</html>
